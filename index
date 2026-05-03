@@ -1,0 +1,34 @@
+const stats = document.querySelectorAll('.stat-number');
+
+function animateStats() {
+  stats.forEach(stat => {
+    const target = +stat.getAttribute('data-target');
+    const suffix = stat.getAttribute('data-suffix') || '';
+    let current = 0;
+
+    const speed = target / 80; // vitesse
+
+    const update = () => {
+      current += speed;
+
+      if (current < target) {
+        stat.innerText = Math.floor(current) + suffix;
+        requestAnimationFrame(update);
+      } else {
+        stat.innerText = target + suffix;
+      }
+    };
+
+    update();
+  });
+}
+
+// Déclenche quand visible
+const observer = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    animateStats();
+    observer.disconnect();
+  }
+}, { threshold: 0.5 });
+
+observer.observe(document.getElementById('stats'));
